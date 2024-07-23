@@ -18,26 +18,26 @@
             <div class="card">
             <img src="images/random_cocktail.jpg" alt="">
                 <div class="container">
-                    <h4>Name of Cocktail</h4>
+                    <h4>Name of Coctail: 
+                        <%if(locals.name_of_drink){%>
+                            <%=name_of_drink%>
+                        <%}%>
+                        </h4>
                     <p>Info on cocktail add more later</p>
                 </div>
             </div>
         </div>
         <div class="button-container">
-            <button type="button" class="btn btn-primary" id="fetchData">Get cocktail</button> 
+           <!-- <button type="button" class="btn btn-primary" id="fetchData">Get cocktail</button>  -->
+            <form action="/get-data" method="get"><!-- This button is connected to the get-data endpoint, it has a get method -->
+                <button type="submit" class="btn btn-primary">Get New Cocktail</button> 
+            </form>
         </div>
-
-        <div class="display-data">
-            <%if(locals.content){%>
-                <%=locals.content%>
-            <%}%>
-        </div>
-
         
     </div>
     <!--Scripts-->
     <!-- <script src="/script.js"></script> -->
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" type="module"></script>  <!--This is the script.js file that should be linked at the bottom of the file-->
+   <!-- <script src="script.js" type="module"></script> --> <!--This is the script.js file that should be linked at the bottom of the file-->
 </body>
 </html>

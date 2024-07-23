@@ -2,6 +2,8 @@
 import express from "express"
 import axios from "axios"
 
+var drink_name = null;
+
 //api url
 const api_url = "https:www.thecocktaildb.com/api/json/v1/1"; // you need to make sure to add https: to the beggining of your api url
 
@@ -13,7 +15,8 @@ app.use(express.static("public")); // You need this to serve static files, or in
 
 //get random data 
 app.get("/",(req,res)=>{
-    res.render("index.ejs");
+    //let randomWord = "cheese";
+    res.render("index.ejs",{name_of_drink:drink_name});
 })
 
 
@@ -21,9 +24,14 @@ app.get("/",(req,res)=>{
 app.get("/get-data",async(req,res)=>{
     try {
         const response = await axios.get(api_url + "/random.php");
-        console.log(response.data); // you need to see output of this 
-        //res.render({content:response.data}); // change after testing the line above
-        res.json(response.data);
+        //console.log(response.data); // you need to see output of this, turn on if you need to see the whole object
+        drink_name = response.data.drinks[0].strDrink; // this is to see if you can acces the drink name in the json object
+        console.log(drink_name);
+
+       // res.render("index.ejs",{name_of_drink:drink_name}); // change after testing the line above
+        //res.render("index.ejs",{name_of_drink:drink_name});
+        res.redirect("/");
+        //res.json(response.data);
         
     } catch (error) {
       console.error('Error fetching data:', error);

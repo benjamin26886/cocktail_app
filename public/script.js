@@ -8,8 +8,8 @@ fetch_data_button.addEventListener("click",async()=>{
     try {
         const response = await axios.get("/get-data"); // connect to the localhost this compueter, to the get-data endpoint on the server
         //console.log("triggerd");
-        console.log(response.data);
-        const cocktail = response.data.drinks[0];
+        console.log(response.data); // output the response data that was recived from the api
+        //const cocktail = response.data.drinks[0];
 
     } catch (error) {
         console.error("Error fetching data:", error);   
