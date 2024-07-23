@@ -6,6 +6,7 @@
     <title>Document</title>
     <!-- Bootstrap CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script><!-- Import Axios here, this will load it gloabally, so that you can use it inside of the script.js file, if you dont load axios here you wont be able to use it inside of an external js script file -->
 </head>
 <body>
     <div class="main">
@@ -23,20 +24,20 @@
             </div>
         </div>
         <div class="button-container">
-            <button type="button" class="btn btn-primary" id="fetchData">Get cocktail</button>
+            <button type="button" class="btn btn-primary" id="fetchData">Get cocktail</button> 
         </div>
 
         <div class="display-data">
-            
+            <%if(locals.content){%>
+                <%=locals.content%>
+            <%}%>
         </div>
 
-        <div>
-            new div
-        </div>
-        <div></div>
+        
     </div>
     <!--Scripts-->
     <!-- <script src="/script.js"></script> -->
-    <link rel="stylesheet" href="styles.css">a
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" type="module"></script>  <!--This is the script.js file that should be linked at the bottom of the file-->
 </body>
 </html>
