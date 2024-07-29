@@ -23,13 +23,18 @@
                             <%=name_of_drink%>
                         <%}%>
                         </h4>
-                    <p>Info on cocktail add more later</p>
+                    <p>
+                        <h5>Instructions:</h5>
+                        <%if(locals.instructions){%>
+                            <%=instructions%>
+                        <%}%>
+                    </p>
                 </div>
             </div>
         </div>
         <div class="button-container">
            <!-- <button type="button" class="btn btn-primary" id="fetchData">Get cocktail</button>  -->
-            <form action="/get-data" method="get"><!-- This button is connected to the get-data endpoint, it has a get method -->
+            <form action="/get-data" method="get"><!-- This button is connected to the get-data endpoint, action is set to /get-data, it has a get method -->
                 <button type="submit" class="btn btn-primary">Get New Cocktail</button> 
             </form>
         </div>
