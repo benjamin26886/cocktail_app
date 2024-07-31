@@ -2,6 +2,13 @@
 import express, { response } from "express"
 import axios from "axios"
 import fs from "fs" // This module is used for interacting with files on the computer
+import path from "path"
+import { fileURLToPath } from 'url';
+
+//You need to use the two lines of code below becuase in package.json type is set to module, because __dirname is not defined in es module scope
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file, to this current file
+const __dirname = path.dirname(__filename); // get the name of the directory , then set the dirname to the current file path, in this case it will be /Users/nick/web_projects/cocktail_app
+
 
 var drink_name = null;
 var instructions = null;
@@ -38,14 +45,15 @@ app.get("/get-data",async(req,res)=>{
         drink_name = response.data.drinks[0].strDrink; // this is to see if you can acces the drink name in the json object
         instructions = response.data.drinks[0].strInstructions; // this line acceses the json object to get the instructions to be eventually passed into the card 
         
-       console.log(drink_name); // Name of drink for debug purposes
+        console.log(drink_name); // Name of drink for debug purposes
        //console.log(instructions);  // Name of instructions for debuig purposes 
 
         //next (fix code below)
-       image_url = await getImage(); // Image url is saved inside here and passed to the function downloadImage
-       console.log(image_url);
-       //downloadImage(image_url); // The image_url varibale is passed to this function, which then writes the data to the subdirectory images 
-       res.redirect("/"); // This redirects the route to the home page 
+        image_url = await getImage(); // Image url is saved inside here and passed to the function downloadImage
+        console.log(image_url);
+        downloadImage(image_url); // The image_url varibale is passed to this function, which then writes the data to the subdirectory images 
+        //console.log(__dirname); // log this to see the directory name 
+        res.redirect("/"); // This redirects the route to the home page 
         
         
     } catch (error) {
@@ -64,8 +72,8 @@ app.listen(port, ()=>{
 async function getImage(){
     try {
         const response = await axios.get(pixabay_url + pixabay_api_key + "&q=" + encodeURIComponent(drink_name) + "&image_type=photo&page=1&per_page=3"); // this is the pixabay response from  the api
-        //console.log(response.data); // just like when you see a response in postman, you need to kae sure you access the response.data property if you want to see the object that is sent back
-        const picture_url = response.data.hits[0].webformatURL; // this is the image url from the json object, that will link to the actual image
+        //console.log(response.data); // just like when you see a response in postman, you need to make sure you access the response.data property if you want to see the object that is sent back
+        const picture_url = response.data.hits[0].webformatURL; // this is the image url from the json object, that will link to the actual image, in the data object it takes the first object in the hits array, and takes the property webformatUrl
         //console.log(picture_url); // this works finally, you should see the image url and be able to follow it in the console!
         return picture_url; // return image url from  function call 
 
@@ -76,11 +84,11 @@ async function getImage(){
 }
 //Download and save image 
 async function downloadImage(url){ // Url will be passed and an arguement to this fucntion, the imgae url will be passed
-    const response = await axios.get(url,{responseType: "arraybuffer"}); // set it to this when you work with binary data, such as images, audio files etc
-    const imageBuffer = Buffer.from(response.data, 'binary');
+    const response = await axios.get(url,{responseType: "arraybuffer"}); // set it to this when you work with binary data, such as images, audio files, the responseType key value pair is an option, that will treat the data as binary, it will retrun the repsonse as binary  etc
+    const imageBuffer = Buffer.from(response.data, 'binary'); // Buffer from will create a buffer instance from the response.data, so this will create an instance of the image 
 
     // Save the image to a file (for example, in the current directory)
-    fs.writeFileSync(path.join(__dirname,'public','images','image.jpg'), imageBuffer);
+    fs.writeFileSync(path.join(__dirname,'public','images','image.jpg' ), imageBuffer); // the first arguement in write filesync is the path of where to save the data, the second arguement is the actuall data that will be written into the file image.jpg
     console.log("Image saved successfully!");
 }
 
@@ -89,5 +97,5 @@ async function downloadImage(url){ // Url will be passed and an arguement to thi
  * 1. Intergrate the pixabay api to show the pictures of the cocktails generated
  * 2. Design App to look more user freindly 
  * 3. Resolve the Promise { <pending> }  This finnaly works!
- * 4. fix the download image function 
+ * 4. fix the download image function  This finnaly works!
  */
