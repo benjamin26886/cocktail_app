@@ -12,7 +12,8 @@ const __dirname = path.dirname(__filename); // get the name of the directory , t
 
 var drink_name = null;
 var instructions = null;
-var image_url = null;
+var image_url = null; // from pixabay
+let imgUrl = path.join('images','random_cocktail.jpg' ); // to directory
 
 
 //Cocktail api url
@@ -29,10 +30,10 @@ const port = 3000;
 
 app.use(express.static("public")); // You need this to serve static files, or in other words this, you cant load custom css without this 
 
-//get random data 
+//get random data  
 app.get("/",(req,res)=>{
-    //let randomWord = "cheese";
-    res.render("index.ejs",{name_of_drink:drink_name, instructions:instructions}); //on this line two objects are passed to ejs, the name of the drink under the value drink name and the instructions
+    //console.log(image_url);
+    res.render("index.ejs",{name_of_drink:drink_name, instructions:instructions,imageUrl:imgUrl}); //on this line two objects are passed to ejs, the name of the drink under the value drink name and the instructions 
 })
 
 
@@ -42,7 +43,7 @@ app.get("/get-data",async(req,res)=>{
         const response = await axios.get(api_url + "/random.php");
         //console.log(response.data);
          // you need to see output of this, turn on if you need to see the whole object
-        drink_name = response.data.drinks[0].strDrink; // this is to see if you can acces the drink name in the json object
+        drink_name = response.data.drinks[0].strDrink + " " + "cocktail"; // this is to see if you can acces the drink name in the json object
         instructions = response.data.drinks[0].strInstructions; // this line acceses the json object to get the instructions to be eventually passed into the card 
         
         console.log(drink_name); // Name of drink for debug purposes
@@ -50,9 +51,11 @@ app.get("/get-data",async(req,res)=>{
 
         //next (fix code below)
         image_url = await getImage(); // Image url is saved inside here and passed to the function downloadImage
-        console.log(image_url);
-        downloadImage(image_url); // The image_url varibale is passed to this function, which then writes the data to the subdirectory images 
-        //console.log(__dirname); // log this to see the directory name 
+        //console.log(image_url);
+        imgUrl = await downloadImage(image_url); // The image_url varibale is passed to this function, which then writes the data to the subdirectory images, the url connected to the image in the sub directory is passed into this global varibale, meaning the last image that was generated
+        //console.log(__dirname); // log this to see the directory name X
+        //imgUrl = path.join('images','image.jpg'); // set this variable to the actuall image, then dynamically pass it (global)
+        //console.log(imgUrl);
         res.redirect("/"); // This redirects the route to the home page 
         
         
@@ -87,9 +90,16 @@ async function downloadImage(url){ // Url will be passed and an arguement to thi
     const response = await axios.get(url,{responseType: "arraybuffer"}); // set it to this when you work with binary data, such as images, audio files, the responseType key value pair is an option, that will treat the data as binary, it will retrun the repsonse as binary  etc
     const imageBuffer = Buffer.from(response.data, 'binary'); // Buffer from will create a buffer instance from the response.data, so this will create an instance of the image 
 
+    // Use a unique filename based on timestamp
+    const timestamp = new Date().getTime(); // generate a time stamp for each time an image is generated 
+    const imagePath = path.join(__dirname, 'public', 'images', `image_${timestamp}.jpg`); //add time stamp to the image 
+    fs.writeFileSync(imagePath, imageBuffer); // write image to the images folder 
     // Save the image to a file (for example, in the current directory)
-    fs.writeFileSync(path.join(__dirname,'public','images','image.jpg' ), imageBuffer); // the first arguement in write filesync is the path of where to save the data, the second arguement is the actuall data that will be written into the file image.jpg
+    //fs.writeFileSync(path.join(__dirname,'public','images',`image_${timestamp}.jpg`), imageBuffer); // the first arguement in write filesync is the path of where to save the data, the second arguement is the actuall data that will be written into the file image.jpg
     console.log("Image saved successfully!");
+
+    // Return the new image path
+    return `images/image_${timestamp}.jpg`; // return dynamically created image with time stamp 
 }
 
 /**
@@ -97,5 +107,5 @@ async function downloadImage(url){ // Url will be passed and an arguement to thi
  * 1. Intergrate the pixabay api to show the pictures of the cocktails generated
  * 2. Design App to look more user freindly 
  * 3. Resolve the Promise { <pending> }  This finnaly works!
- * 4. fix the download image function  This finnaly works!
+ * 4. fix the download image function  This finnaly works, kind of, image is displayed however, it only uses the last imgae that was generated 
  */

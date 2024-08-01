@@ -16,7 +16,7 @@
     <div class="main-container">
             <!--Card-->
             <div class="card">
-            <img src="images/image.jpg" alt="">
+            <img src="<%=imageUrl%>" alt="Dynamically loaded image">  <!--Dynamically pass image from backend to front end to mathch the drink, fi you dont you will have to reload the page, there was an error that occured you neeed to copy the relative path instead of the absolute path, you dont neeed to start from the top of the folder, I believe this is due to ejs and the relationship with public so in this case you would start the path from the images folder then to the image.jpg-->
                 <div class="container">
                     <h4>Name of Coctail: 
                         <%if(locals.name_of_drink){%>
